@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   ADD YOUR NAME / SECTION NUMBER HERE
+ *   Davide Mazzucco / 001
  *
  *   This java file contains the problem solutions of canFinish and
  *   numGroups methods.
@@ -79,12 +79,47 @@ class ProblemSolutions {
 
         // Build directed graph's adjacency list
         ArrayList<Integer>[] adj = getAdjList(numExams, 
-                                        prerequisites); 
+                                        prerequisites);
 
-        // ADD YOUR CODE HERE - ADD YOUR NAME / SECTION AT TOP OF FILE
-        return false;
 
+        boolean[] visited = new boolean[numNodes]; //keep track of nodes visited
+        boolean[] completed = new boolean[numNodes]; //keep track of processed nodes
+
+        //check if possible
+        for (int i = 0; i < numNodes; i++) {//go through the number of exams
+            if (!completed[i]) {//check if completed
+                if (hasCycle(i, adj, visited, completed)) {//check if there is a cycle
+                    return false; //cycle detected so no order is possible
+                }
+            }
+        }
+
+        return true; //no cycle is found so there is a possible order
     }
+
+    //Helper method to find cycles
+    private boolean hasCycle(int node, ArrayList<Integer>[] adj, boolean[] visited, boolean[] completed) {
+        if (visited[node]) {//check if visited
+            return true;
+        }
+
+        visited[node] = true;//mark node as visited
+
+        for (int n : adj[node]) {
+            if (!completed[n]) {//only go through unprocessed nodes
+                if (hasCycle(n, adj, visited, completed)) {//recursevely call method
+                    return true;
+                }
+            }
+        }
+
+        visited[node] = false; //If node is gone through withouth a cycle add to completed not visited
+        completed[node] = true; //mark node as completed
+        return false; //no cycle is found so the method will return false
+    }
+
+
+
 
 
     /**
@@ -189,10 +224,35 @@ class ProblemSolutions {
                 }
             }
         }
+        //create an array to keep track of visited nodes
+        boolean[] visited = new boolean[numNodes];
+        int groupCount = 0;//count number of groups
 
-        // YOUR CODE GOES HERE - you can add helper methods, you do not need
-        // to put all code in this method.
-        return -1;
+        //go through all nodes to count
+        for (int k = 0; k < numNodes; k++) {
+            if (!visited[k]) {
+                groupCount++;//add to count if node hasn't been visited
+                DepthFirstSearch(k, graph, visited);//go through Depth First Search to check nodes
+            }
+        }
+
+        return groupCount;//return total
     }
+
+    //Depth first search helper method
+    private void DepthFirstSearch(int node, Map<Integer, List<Integer>> graph, boolean[] visited) {
+        visited[node] = true; //mark the input node as visited
+
+        //go through all neighbours of current node
+        for (int n : graph.getOrDefault(node, new ArrayList<>())) {
+            if (!visited[n]) {
+                DepthFirstSearch(n, graph, visited);//recursevily call method to visit all nodes
+            }
+        }
+    }
+
+
+
+
 
 }

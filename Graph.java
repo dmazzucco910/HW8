@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Davide Mazzucco / 001
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -103,8 +103,32 @@ public class Graph {
    */
   
   public int findRoot() {
+    int[] inEdges = new int[numVertices];//create empty array with number of incoming endges for each vertex
 
-    // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME/SECTION AT TOP OF FILE
-    return -1;
-  } 
+
+    //find the number of incoming edges for each vertex
+    for (int i = 0; i < numVertices; i++) {
+      for (int n : adjListArr[i]) {//find edges
+        inEdges[n]++;
+      }
+    }
+
+    //find the root vertex
+    int rootIndex = -1; //start root at -1 since there is none found yet
+    for (int i = 0; i < numVertices; i++) {
+      if (inEdges[i] == 0) {//check if vertex has incoming edges
+        if (rootIndex != -1) {//check if a root has been found
+          return -1;//if multiple return -1
+        }
+        rootIndex = i;//if not already one make this the root
+      }
+    }
+
+
+    if (rootIndex == -1) {//check if multiple or no root
+      return -1; //return -1 if no root found
+    } else {
+      return vertexValues.get(rootIndex); //return value of teh root vertex
+    }
+  }
 }
